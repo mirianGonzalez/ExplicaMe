@@ -9,16 +9,30 @@ import shap
 
 np.random.seed(42)
 n = 200
+
+# --- DATOS SINTÉTICOS MÁS REALISTAS ---
+# Ingresos entre $1,200 y $6,000 (media $3,000)
 df = pd.DataFrame({
-    "ingreso_mensual": np.random.normal(800, 300, n).clip(200, 2500),
-    "deuda_actual": np.random.normal(400, 200, n).clip(0, 1500),
-    "antiguedad_laboral": np.random.randint(0, 20, n),
+    "ingreso_mensual": np.random.normal(3000, 1000, n).clip(1200, 6000),
+    # Deuda entre $0 y $4,000 (media $1,000)
+    "deuda_actual": np.random.normal(1000, 800, n).clip(0, 4000),
+    # Antigüedad laboral entre 0 y 30 años
+    "antiguedad_laboral": np.random.randint(0, 30, n),
+    # Historial de pago: 0 = con impagos, 1 = sin impagos (70% sin impagos)
     "historial_pago": np.random.choice([0, 1], n, p=[0.3, 0.7]),
 })
-score = ((df["ingreso_mensual"] > 700).astype(int)
-         + (df["deuda_actual"] < 500).astype(int)
+
+# --- REGLAS DE NEGOCIO MÁS REALISTAS ---
+# 1. Ingreso mayor a $2,000 (capacidad de pago)
+# 2. Deuda menor al 40% del ingreso (ratio de endeudamiento saludable)
+# 3. Historial sin impagos
+# 4. Antigüedad mayor a 1 año (estabilidad mínima)
+score = ((df["ingreso_mensual"] > 2000).astype(int)
+         + (df["deuda_actual"] < (df["ingreso_mensual"] * 0.4)).astype(int)
          + df["historial_pago"]
-         + (df["antiguedad_laboral"] > 5).astype(int))
+         + (df["antiguedad_laboral"] > 1).astype(int))
+
+# Se aprueba si cumple al menos 3 de las 4 condiciones
 df["aprobado"] = (score >= 3).astype(int)
 
 X = df.drop(columns=["aprobado"])
