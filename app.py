@@ -37,9 +37,9 @@ st.markdown(
 
 # --- Sidebar ---
 st.sidebar.header("📋 Datos de la solicitud")
-ingreso = st.sidebar.number_input("Ingreso mensual ($)", min_value=200, max_value=2500, value=800, step=50)
-deuda = st.sidebar.number_input("Deuda actual ($)", min_value=0, max_value=1500, value=400, step=50)
-antiguedad = st.sidebar.number_input("Antigüedad laboral (años)", min_value=0, max_value=20, value=5)
+ingreso = st.number_input("Ingreso mensual ($)", min_value=0, value=3500, step=100)
+deuda = st.number_input("Deuda actual ($)", min_value=0, value=800, step=100)
+antiguedad = st.number_input("Antigüedad laboral (años)", min_value=0, value=5, step=1)
 historial = st.sidebar.selectbox(
     "Historial de pago", [0, 1], format_func=lambda x: "Bueno" if x == 1 else "Con impagos"
 )
