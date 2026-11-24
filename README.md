@@ -1,5 +1,10 @@
 # 🧠 ExplicaMe — Agente adaptativo de explicaciones
 
+🚀 **[Prueba la aplicación en vivo aquí](https://explicame-lsebcz3xadjhvuxmfbcnsk.streamlit.app/)**
+
+![Vista previa de ExplicaMe] <img width="1283" height="628" alt="image" src="https://github.com/user-attachments/assets/51a6503d-08ac-416e-ab1b-efadc812798f" />
+
+
 Agente de IA que explica decisiones automatizadas de crédito **de forma distinta según quién las lea**, usando la misma evidencia SHAP. Demo de **explicabilidad, interpretabilidad y transparencia** para el desafío de Creación de agentes de IA adaptativos.
 
 ---
