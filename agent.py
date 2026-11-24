@@ -1,20 +1,24 @@
 import streamlit as st
 from openai import OpenAI
+import os
 
-# Intenta obtener la clave desde st.secrets (Streamlit) o desde os.environ (local)
-# Ajusta la estructura según cómo guardaste el secreto en el panel de Streamlit
-api_key = st.secrets.get("OPENAI_API_KEY") or st.secrets.get("openai", {}).get("api_key")
-
-if not api_key:
-    # Si no está en secrets, intenta con variable de entorno como fallback
-    import os
-    api_key = os.getenv("OPENAI_API_KEY")
+# Leer GROQ_API_KEY (soporta st.secrets y variables de entorno)
+try:
+    api_key = st.secrets.get("GROQ_API_KEY")
+except Exception:
+    api_key = None
 
 if not api_key:
-    raise ValueError("No se encontró la API key de OpenAI en st.secrets ni en las variables de entorno.")
+    api_key = os.getenv("GROQ_API_KEY")
 
-client = OpenAI(api_key=api_key)
+if not api_key:
+    raise ValueError("No se encontró GROQ_API_KEY en st.secrets ni en las variables de entorno")
 
+# ¡Punto clave! Especificar la base_url de Groq
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v1",
+    api_key=api_key
+)
 
 PROMPTS_AUDIENCIA = {
     "Dirección": (
