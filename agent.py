@@ -45,6 +45,18 @@ PROMPTS_AUDIENCIA = {
 
 def generar_explicacion(resultado: dict, audiencia: str) -> str:
     system_prompt = PROMPTS_AUDIENCIA[audiencia]
+
+    # --- FUNCIÓN AUXILIAR PARA LIMPIAR DATOS ---
+    def limpiar_para_json(obj):
+        if isinstance(obj, dict):
+            return {k: limpiar_para_json(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [limpiar_para_json(v) for v in obj]
+        elif isinstance(obj, type(Ellipsis)):
+            return "N/A"  # Reemplazamos el ... por texto
+        else:
+            return obj
+    
     evidencia = {
         "decision": resultado["decision"],
         "probabilidad": resultado["probabilidad"],
@@ -53,17 +65,25 @@ def generar_explicacion(resultado: dict, audiencia: str) -> str:
         "modelo": resultado["modelo"],
         "modelo_tipo": resultado["modelo_tipo"],
     }
+
+    # Limpiamos la evidencia antes de convertirla a JSON
+    evidencia_limpia = limpiar_para_json(evidencia)
+    
     user_prompt = (
         "Genera la explicación basándote EXCLUSIVAMENTE en esta evidencia. "
         "No inventes razones no respaldadas por las contribuciones SHAP.\n\n"
         f"Evidencia:\n{json.dumps(evidencia, indent=2, ensure_ascii=False)}"
     )
     
+    # Modelo actualizado de Groq
     response = client.chat.completions.create(
-    model="openai/gpt-oss-120b",  
-    messages=[...],
-    temperature=0.3,
-    max_tokens=400,
+        model="openai/gpt-oss-120b",  # Recuerda que cambiamos el modelo aquí
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.3,
+        max_tokens=400,
     )
     return response.choices[0].message.content.strip()
 
