@@ -1,17 +1,21 @@
-# agent.py
 import os
 import json
 from datetime import datetime, timezone
-from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
+# Manejo seguro de dotenv para evitar que la app se caiga en Streamlit Cloud
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # En Streamlit Cloud, las variables se configuran en los "Secrets"
 
 # --- Cliente apuntando a Groq (compatible con OpenAI SDK) ---
 client = OpenAI(
     api_key=os.environ.get("GROQ_API_KEY"),
     base_url="https://api.groq.com/openai/v1",
 )
+
 
 PROMPTS_AUDIENCIA = {
     "Dirección": (
@@ -52,7 +56,7 @@ def generar_explicacion(resultado: dict, audiencia: str) -> str:
 
     # Modelo gratuito de Groq: Llama 3.3 70B (buen equilibrio calidad/velocidad)
     response = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
+        model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
@@ -96,7 +100,7 @@ def ejecutar_agente(solicitud: dict, audiencia: str, nombre_modelo: str) -> dict
         "version_modelo": resultado["version_modelo"],
         "fuentes": resultado["fuentes"],
         "hash_evidencia": resultado["hash_evidencia"],
-        "modelo_llm": "llama-3.3-70b-versatile (Groq)",
+        "modelo_llm": "llama-3.3-70b-versatile",
         "feedback": None,
         "apelacion": None,
     }

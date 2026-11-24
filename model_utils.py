@@ -27,7 +27,7 @@ y = df["aprobado"]
 # --- Modelo 1: Regresión Logística (interpretable) ---
 model_lr = LogisticRegression(max_iter=1000)
 model_lr.fit(X, y)
-explainer_lr = shap.LinearExplainer(model_lr, X, max_samples=None)
+explainer_lr = shap.Explainer(model_lr, X)
 
 # --- Modelo 2: Random Forest (caja negra, para contraste) ---
 model_rf = RandomForestClassifier(n_estimators=100, max_depth=4, random_state=42)

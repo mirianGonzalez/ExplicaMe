@@ -3,5 +3,6 @@ numpy
 pandas
 altair
 scikit-learn
+python-dotenv
+openai
 shap
-

@@ -1,7 +1,2 @@
-.env
-__pycache__/
-*.pyc
-logs/
-.streamlit/
-.venv/
-venv/
+.vs/
+python
