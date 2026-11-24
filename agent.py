@@ -58,16 +58,12 @@ def generar_explicacion(resultado: dict, audiencia: str) -> str:
         "No inventes razones no respaldadas por las contribuciones SHAP.\n\n"
         f"Evidencia:\n{json.dumps(evidencia, indent=2, ensure_ascii=False)}"
     )
-
-    # Modelo gratuito de Groq: Llama 3.3 70B (buen equilibrio calidad/velocidad)
+    
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        temperature=0.3,
-        max_tokens=400,
+    model="openai/gpt-oss-120b",  
+    messages=[...],
+    temperature=0.3,
+    max_tokens=400,
     )
     return response.choices[0].message.content.strip()
 
