@@ -1,20 +1,19 @@
-import os
-import json
-from datetime import datetime, timezone
+import streamlit as st
 from openai import OpenAI
 
-# Manejo seguro de dotenv para evitar que la app se caiga en Streamlit Cloud
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass  # En Streamlit Cloud, las variables se configuran en los "Secrets"
+# Intenta obtener la clave desde st.secrets (Streamlit) o desde os.environ (local)
+# Ajusta la estructura según cómo guardaste el secreto en el panel de Streamlit
+api_key = st.secrets.get("OPENAI_API_KEY") or st.secrets.get("openai", {}).get("api_key")
 
-# --- Cliente apuntando a Groq (compatible con OpenAI SDK) ---
-client = OpenAI(
-    api_key=os.environ.get("GROQ_API_KEY"),
-    base_url="https://api.groq.com/openai/v1",
-)
+if not api_key:
+    # Si no está en secrets, intenta con variable de entorno como fallback
+    import os
+    api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    raise ValueError("No se encontró la API key de OpenAI en st.secrets ni en las variables de entorno.")
+
+client = OpenAI(api_key=api_key)
 
 
 PROMPTS_AUDIENCIA = {
